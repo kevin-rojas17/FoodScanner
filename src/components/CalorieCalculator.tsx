@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { Salad, Send, Mail, ArrowRight } from 'lucide-react';
 import FoodEntry from './FoodEntry';
 import ThankYouMessage from './ThankYouMessage';
+import emailjs from '@emailjs/browser';
+
+
+
 
 const CalorieCalculator: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -32,6 +36,24 @@ const CalorieCalculator: React.FC = () => {
     setEmail(value);
     setIsValidEmail(validateEmail(value));
   };
+  const sendEmailToUser = async () => {
+    const templateParams = {
+      user_email: email, // este es el correo ingresado por el usuario
+    };
+  
+    try {
+      await emailjs.send(
+        'service_g1epp3e',
+        'template_hfk5cnb',
+        templateParams,
+        'C7oURaS00jbn7w3SC'         
+      );
+      console.log('Correo enviado al usuario correctamente');
+    } catch (error) {
+      console.error('Error al enviar el correo:', error);
+    }
+  };
+  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +73,7 @@ const CalorieCalculator: React.FC = () => {
       setIsValidEmail(false);
       return;
     }
-    
+    sendEmailToUser(); // Enviar correo al usuario
     setNotificationRequested(true);
   };
 
