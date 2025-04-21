@@ -15,6 +15,8 @@ const CalorieCalculator: React.FC = () => {
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [showEmailInput, setShowEmailInput] = useState(false);
   const [notificationRequested, setNotificationRequested] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const validateFood = (value: string) => {
     return value.trim().length > 0;
@@ -37,6 +39,7 @@ const CalorieCalculator: React.FC = () => {
     setIsValidEmail(validateEmail(value));
   };
   const sendEmailToUser = async () => {
+    setIsLoading(true);
     const templateParams = {
       user_email: email, // este es el correo ingresado por el usuario
     };
@@ -49,8 +52,11 @@ const CalorieCalculator: React.FC = () => {
         'C7oURaS00jbn7w3SC'         
       );
       console.log('Correo enviado al usuario correctamente');
+      setNotificationRequested(true);
     } catch (error) {
       console.error('Error al enviar el correo:', error);
+    }finally {
+      setIsLoading(false); // termina el spinner
     }
   };
   
@@ -89,7 +95,12 @@ const CalorieCalculator: React.FC = () => {
   if (showEmailInput) {
     return (
       <div className="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 ease-in-out animate-fade-in">
-        {notificationRequested ? (
+        {isLoading ? (
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-600 border-opacity-50"></div>
+          <p className="text-gray-600 text-sm">Enviando correo...</p>
+        </div>
+        ): notificationRequested ? (
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
               <Mail className="w-8 h-8 text-green-600" />
